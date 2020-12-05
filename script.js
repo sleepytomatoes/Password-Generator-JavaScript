@@ -30,6 +30,7 @@ function generatePassword() {
     ) {
         alert("Password must include a character type!");
     }
+}
     // Runs function again
     generatePassword();
 }
@@ -63,7 +64,7 @@ function generatePassword() {
 
 // function creates a random number within a given range using Math.floor
 function generatePasswordLength(charLengthMin, charLengthMax) {
-    return Math.floor(Math.random() * (maxLength - minLength + 1) + minLength);
+    return Math.floor(Math.random() * (charLengthMax - charLengthMin + 1) + charLengthMin);
 }
   
   //Password generator functions
@@ -82,3 +83,4 @@ function generatePasswordLength(charLengthMin, charLengthMax) {
   function randomSymbol() {
     var symbols = "!@#$%^&*()[]{}<>?/";
     return symbols[Math.floor(Math.random() * symbols.length)];
+  }
