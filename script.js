@@ -1,6 +1,11 @@
 // Assignment Code
 var generateBtn = document.querySelector("#generate");
 
+var includeLowercase
+var includeUppercase
+var includeSymbols
+var includeNumbers 
+
 // Write password to the #password input
 function writePassword() {
   var password = generatePassword();
@@ -9,62 +14,52 @@ function writePassword() {
   passwordText.value = password;
 }
 
-
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
-// Prompts and confirm statements regarding parameters for password
-// Here I used parseInt to convert the string containing an integer into an actual integer
+
+// This function creates parameters for the users password
 function generatePassword() {
-    var charLengthMin = parseInt(prompt("Enter the minumum number of characters for desired password"));
-    var charLengthMax = parseInt(prompt("Enter the maxiumum number of characters for desired password"));
-    var includeLowercase = confirm("Include lowercase?");
-    var includeUppercase = confirm("Include uppercase?");
-    var includeSymbols = confirm("Include symbols?");
-    var includeNumbers = confirm("Include numbers?");
-// Control flow to make sure user chooses at least one character type
-    if (
-        includeLowercase === false &&
-        includeUppercase === false &&
-        includeSymbols === false &&
-        includeNumbers === false
-    ) {
-        alert("Password must include a character type!");
-    }
+  // This empty array will contain the functions that generate random characters for user password
+  // The contents of the array will be conditional to the users input
+  var charGeneratorFunctions = [];
+  var charLength = parseInt(prompt("Enter a number between 8 and 128"));
+
+  if (charLength < 8 || charLength > 128) {
+    alert("Your password must be at least 8 characters and no more than 128")
+    return generatePassword();
+  }
+
+  triggerAlerts()
+
+// These if statements will push our generator functions into the charGeneratorFunctions
+  if (includeLowercase) {
+    charGeneratorFunctions.push(randomLower);
+  }
+
+  if (includeUppercase) {
+    charGeneratorFunctions.push(randomUpper);
+  }
+
+  if (includeSymbols) {
+    charGeneratorFunctions.push(randomSymbol);
+  }
+
+  if (includeNumbers) {
+    charGeneratorFunctions.push(randomNumber);
+  }
+
+// userPassword is passed into a for loop to build the users password until it is the length chosen by the user 
+var userPassword = '';
+for (var i = 0; i < charLength; i++) {
+  userPassword += charGeneratorFunctions[getRandomIndex(charGeneratorFunctions.length - 1)](); 
 }
-    // Runs function again
-    generatePassword();
-}
-    // Setting up password length to be between the min and max
-    var passwordLength = generatePasswordLength(charLengthMin, charLengthMax);
-    console.log(passwordLength);
-    // Empty string to which we will append the random characters
-    var password = ""
-  // for loop which will add new characters to our string until the length requirements are met
-    for (var i = 0; i < passwordLength; i++) {
-  // all if statements run independently of one another
-  // each loop creates 4 characters if the user chooses to include all types
-    if (includeLowercase === true) {
-        password += randomLower();
-    }
-    if (includeUppercase === true) {
-        password += randomUpper();
-    }
-    if (includeSymbols === true) {
-        password += randomSymbol();
-    }
-    if (includeNumbers === true) {
-        password += randomNumber();    
-    }
-    }
-// This statement takes a slice from the password string that is exactly the password length
-    var passwordText = password.slice(0, passwordLength);
-// grabs the password display element and assigns the password to text content, thus displaying it
-    document.querySelector("#password").textContent = passwordText;
+// var password within writePassword will be equal to userPassword
+  return userPassword;
 }
 
 // function creates a random number within a given range using Math.floor
-function generatePasswordLength(charLengthMin, charLengthMax) {
-    return Math.floor(Math.random() * (charLengthMax - charLengthMin + 1) + charLengthMin);
+function getRandomIndex(arrayLength) {
+    return Math.floor(Math.random() * (arrayLength - 0 + 1) + 0);
 }
   
   //Password generator functions
@@ -83,4 +78,19 @@ function generatePasswordLength(charLengthMin, charLengthMax) {
   function randomSymbol() {
     var symbols = "!@#$%^&*()[]{}<>?/";
     return symbols[Math.floor(Math.random() * symbols.length)];
+  }
+
+  // This function gets input from the user about parameters of password content
+  // This function was placed outside of generatePassword to run independently without conflicting with the other alert
+  function triggerAlerts () {
+    includeLowercase = confirm("Include lowercase?");
+    includeUppercase = confirm("Include uppercase?");
+    includeSymbols = confirm("Include symbols?");
+    includeNumbers = confirm("Include numbers?");
+
+  // If statement in the case the user returns false for each boolean, an alert is given and the function repeats
+  if (!includeLowercase && !includeUppercase && !includeSymbols && !includeNumbers) {
+      alert("You must choose at least one character type.")
+      return triggerAlerts()
+    }
   }
